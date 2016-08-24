@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Yes / No ,"
+        android:text="Yes / No,"
         android:id="@+id/lable1"
         android:layout_above="@+id/number"
         android:layout_centerHorizontal="true"/>
