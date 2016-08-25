@@ -127,4 +127,16 @@
         android:layout_toStartOf="@+id/textLayout"
         android:onClick="clickCheat" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Information"
+        android:id="@+id/info"
+        android:layout_alignParentTop="true"
+        android:textColor="#d50000"
+        android:layout_alignStart="@+id/textLayout"
+        android:layout_toStartOf="@+id/slable"
+        android:layout_margin="10dp" />
+
 </RelativeLayout>

@@ -27,11 +27,11 @@ public class CheatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheat);
 
-        if(getIntent()!=null)
+        if(getIntent().getExtras()!=null)
         {
             Intent intent = getIntent();
             Bundle b = intent.getExtras();
-            num = b.getInt("number");
+            num = b.getInt("num");
         }
         if(savedInstanceState!=null)
         {
@@ -59,8 +59,7 @@ public class CheatActivity extends AppCompatActivity {
 
     void onClickBack(View view)
     {
-        Intent intent = new Intent(this,GameActivity.class);
-        startActivity(intent);
+        this.finish();
     }
 
     @Override

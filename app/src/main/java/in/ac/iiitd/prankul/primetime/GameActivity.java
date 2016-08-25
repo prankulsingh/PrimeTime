@@ -53,7 +53,7 @@ public class GameActivity extends AppCompatActivity {
     int num;
 
     // widgets
-    TextView number, scoreText;
+    TextView number, scoreText, info;
     Button buttonYes, buttonNo, buttonSkip;
 
 
@@ -71,29 +71,6 @@ public class GameActivity extends AppCompatActivity {
         //initial number
         random.setSeed(seconds);
         num = random.nextInt(1000)+1;
-        Intent intent = getIntent();
-        Bundle b = intent.getExtras();
-        if(b==null)
-        {
-            //started from this activity
-            ;
-        }
-        else
-        {
-            activityBackFromFlag = b.getInt("activityFlag");
-        }
-        if(activityBackFromFlag==0)
-        {
-
-        }
-        else if(activityBackFromFlag==1)
-        {
-
-        }
-        else if(activityBackFromFlag==2)
-        {
-
-        }
 
         //widget initialization
         number = (TextView) findViewById(R.id.number);
@@ -101,6 +78,7 @@ public class GameActivity extends AppCompatActivity {
         buttonNo = (Button) findViewById(R.id.buttonNo);
         buttonSkip = (Button) findViewById(R.id.buttonSkip);
         scoreText = (TextView) findViewById(R.id.score);
+        info = (TextView) findViewById(R.id.info);
 
         // init
         defaultYesButton = buttonYes.getBackground();
@@ -114,13 +92,34 @@ public class GameActivity extends AppCompatActivity {
         if(savedInstanceState==null) {
             number.setText(String.valueOf(num));
             scoreText.setText(String.valueOf(score));
+            info.setVisibility(View.INVISIBLE);
         }
         else {
             num = savedInstanceState.getInt("num");
             state = savedInstanceState.getInt("state");
             whichButtonPressed = savedInstanceState.getInt("button");
             score = savedInstanceState.getInt("score");
+            activityBackFromFlag = savedInstanceState.getInt("activity");
+            Log.i("GAME","activity no "+activityBackFromFlag);
             scoreText.setText(String.valueOf(score));
+
+            //info lable
+            if(activityBackFromFlag==0)
+            {
+                info.setVisibility(View.INVISIBLE);
+            }
+            else if(activityBackFromFlag==1)
+            {
+                info.setVisibility(View.VISIBLE);
+                info.setText("Used a Hint, score reduced by 2");
+            }
+            else if(activityBackFromFlag==2)
+            {
+                info.setVisibility(View.VISIBLE);
+                info.setText("Used a Cheat, score reduced by 8");
+            }
+
+            //state conditions
             if (state == 1) {
                 buttonYes.setEnabled(false);
                 buttonNo.setEnabled(false);
@@ -216,6 +215,8 @@ public class GameActivity extends AppCompatActivity {
             state=0;
             num = random.nextInt(1000)+1;
             number.setText(String.valueOf(num));
+            activityBackFromFlag=0;
+            info.setVisibility(View.INVISIBLE);
 
             buttonNo.setEnabled(true);
             buttonYes.setEnabled(true);
@@ -228,13 +229,19 @@ public class GameActivity extends AppCompatActivity {
     public void clickHint(View view)
     {
         Intent intent = new Intent(this,HintActivity.class);
+        activityBackFromFlag = 1;
+        info.setVisibility(View.VISIBLE);
+        info.setText("Used a Hint, score reduced by 2");
         startActivity(intent);
     }
 
     public void clickCheat(View view)
     {
         Intent intent = new Intent(this,CheatActivity.class);
+        activityBackFromFlag = 2;
         intent.putExtra("num",num);
+        info.setVisibility(View.VISIBLE);
+        info.setText("Used a Cheat, score reduced by 8");
         startActivity(intent);
     }
 
@@ -244,6 +251,8 @@ public class GameActivity extends AppCompatActivity {
         savedInstanceState.putInt("num", num);
         savedInstanceState.putInt("button",whichButtonPressed);
         savedInstanceState.putInt("score",score);
+        savedInstanceState.putInt("activity",activityBackFromFlag);
+        Log.i("GAME","in saveinstance "+activityBackFromFlag);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -262,6 +271,8 @@ public class GameActivity extends AppCompatActivity {
                     if(score<0)
                         score=0;
                     scoreText.setText(String.valueOf(score));
+                    activityBackFromFlag=0;
+                    info.setVisibility(View.INVISIBLE);
                     break;
 
                 case DialogInterface.BUTTON_NEGATIVE:

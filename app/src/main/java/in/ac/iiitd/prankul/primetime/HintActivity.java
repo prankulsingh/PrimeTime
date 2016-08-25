@@ -15,7 +15,6 @@ public class HintActivity extends AppCompatActivity {
 
     void onClickBack(View view)
     {
-        Intent intent = new Intent(this,GameActivity.class);
-        startActivity(intent);
+        this.finish();
     }
 }
