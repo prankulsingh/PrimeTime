@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Prime Time</string>
+    <string name="hintused">Used a Hint, score reduced by 2</string>
+    <string name="cheatused">Used a Cheat, score reduced by 8</string>
 </resources>

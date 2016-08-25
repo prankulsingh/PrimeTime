@@ -3,23 +3,15 @@ package in.ac.iiitd.prankul.primetime;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.util.Calendar;
 import java.util.Random;
@@ -29,6 +21,7 @@ public class GameActivity extends AppCompatActivity {
     boolean isPrime(int x)
     {
         int primes[] = {2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113,127,131,137,139,149,151,157,163,167,173,179,181,191,193,197,199,211,223,227,229,233,239,241,251,257,263,269,271,277,281,283,293,307,311,313,317,331,337,347,349,353,359,367,373,379,383,389,397,401,409,419,421,431,433,439,443,449,457,461,463,467,479,487,491,499,503,509,521,523,541,547,557,563,569,571,577,587,593,599,601,607,613,617,619,631,641,643,647,653,659,661,673,677,683,691,701,709,719,727,733,739,743,751,757,761,769,773,787,797,809,811,821,823,827,829,839,853,857,859,863,877,881,883,887,907,911,919,929,937,941,947,953,967,971,977,983,991,997};
+
         for(int i=0;i<primes.length;i++) {
             if (x == primes[i]) {
                 return true;
@@ -100,7 +93,7 @@ public class GameActivity extends AppCompatActivity {
             whichButtonPressed = savedInstanceState.getInt("button");
             score = savedInstanceState.getInt("score");
             activityBackFromFlag = savedInstanceState.getInt("activity");
-            Log.i("GAME","activity no "+activityBackFromFlag);
+            //Log.i("GAME","activity no "+activityBackFromFlag);
             scoreText.setText(String.valueOf(score));
 
             //info lable
@@ -111,12 +104,12 @@ public class GameActivity extends AppCompatActivity {
             else if(activityBackFromFlag==1)
             {
                 info.setVisibility(View.VISIBLE);
-                info.setText("Used a Hint, score reduced by 2");
+                info.setText(R.string.hintused);
             }
             else if(activityBackFromFlag==2)
             {
                 info.setVisibility(View.VISIBLE);
-                info.setText("Used a Cheat, score reduced by 8");
+                info.setText(R.string.cheatused);
             }
 
             //state conditions
@@ -231,7 +224,7 @@ public class GameActivity extends AppCompatActivity {
         Intent intent = new Intent(this,HintActivity.class);
         activityBackFromFlag = 1;
         info.setVisibility(View.VISIBLE);
-        info.setText("Used a Hint, score reduced by 2");
+        info.setText(R.string.hintused);
         startActivity(intent);
     }
 
@@ -241,7 +234,7 @@ public class GameActivity extends AppCompatActivity {
         activityBackFromFlag = 2;
         intent.putExtra("num",num);
         info.setVisibility(View.VISIBLE);
-        info.setText("Used a Cheat, score reduced by 8");
+        info.setText(R.string.cheatused);
         startActivity(intent);
     }
 
@@ -252,7 +245,7 @@ public class GameActivity extends AppCompatActivity {
         savedInstanceState.putInt("button",whichButtonPressed);
         savedInstanceState.putInt("score",score);
         savedInstanceState.putInt("activity",activityBackFromFlag);
-        Log.i("GAME","in saveinstance "+activityBackFromFlag);
+        //Log.i("GAME","in saveinstance "+activityBackFromFlag);
         super.onSaveInstanceState(savedInstanceState);
     }
 
