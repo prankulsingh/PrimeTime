@@ -2,6 +2,7 @@ package in.ac.iiitd.prankul.primetime;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -41,6 +42,7 @@ public class GameActivity extends AppCompatActivity {
     // important variables
     int state = 0;
     int score = 0;
+    int activityBackFromFlag = 0;
     int whichButtonPressed;
     Drawable defaultYesButton,defaultNoButton,defaultSkipButton;
 
@@ -69,6 +71,29 @@ public class GameActivity extends AppCompatActivity {
         //initial number
         random.setSeed(seconds);
         num = random.nextInt(1000)+1;
+        Intent intent = getIntent();
+        Bundle b = intent.getExtras();
+        if(b==null)
+        {
+            //started from this activity
+            ;
+        }
+        else
+        {
+            activityBackFromFlag = b.getInt("activityFlag");
+        }
+        if(activityBackFromFlag==0)
+        {
+
+        }
+        else if(activityBackFromFlag==1)
+        {
+
+        }
+        else if(activityBackFromFlag==2)
+        {
+
+        }
 
         //widget initialization
         number = (TextView) findViewById(R.id.number);
@@ -78,7 +103,6 @@ public class GameActivity extends AppCompatActivity {
         scoreText = (TextView) findViewById(R.id.score);
 
         // init
-
         defaultYesButton = buttonYes.getBackground();
         defaultNoButton = buttonNo.getBackground();
         defaultSkipButton = buttonSkip.getBackground();
@@ -199,6 +223,19 @@ public class GameActivity extends AppCompatActivity {
             defaultYesButton.setColorFilter(Color.WHITE, PorterDuff.Mode.LIGHTEN);
             defaultNoButton.setColorFilter(Color.WHITE, PorterDuff.Mode.LIGHTEN);
         }
+    }
+
+    public void clickHint(View view)
+    {
+        Intent intent = new Intent(this,HintActivity.class);
+        startActivity(intent);
+    }
+
+    public void clickCheat(View view)
+    {
+        Intent intent = new Intent(this,CheatActivity.class);
+        intent.putExtra("number",num);
+        startActivity(intent);
     }
 
     @Override
