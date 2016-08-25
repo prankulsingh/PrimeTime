@@ -234,7 +234,7 @@ public class GameActivity extends AppCompatActivity {
     public void clickCheat(View view)
     {
         Intent intent = new Intent(this,CheatActivity.class);
-        intent.putExtra("number",num);
+        intent.putExtra("num",num);
         startActivity(intent);
     }
 
