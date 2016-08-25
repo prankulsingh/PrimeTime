@@ -3,7 +3,9 @@ package in.ac.iiitd.prankul.primetime;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class CheatActivity extends AppCompatActivity {
@@ -21,11 +23,21 @@ public class CheatActivity extends AppCompatActivity {
         return false;
     }
 
-    int num;
+    int num, state;
+
+    TextView lable1, lable2, number;
+    Button return1,show;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheat);
+
+        state=0;
+        lable1 = (TextView) findViewById(R.id.lable1);
+        lable2 = (TextView) findViewById(R.id.lable2);
+        number = (TextView) findViewById(R.id.number);
+        return1 = (Button) findViewById(R.id.return1);
+        show = (Button) findViewById(R.id.show);
 
         if(getIntent().getExtras()!=null)
         {
@@ -33,18 +45,27 @@ public class CheatActivity extends AppCompatActivity {
             Bundle b = intent.getExtras();
             num = b.getInt("num");
         }
-        if(savedInstanceState!=null)
+        if(savedInstanceState==null)
+        {
+            ;
+        }
+        else
         {
             Bundle b = savedInstanceState;
             num = b.getInt("num");
+            state = b.getInt("state");
+            if(state==1)
+            {
+                show.setEnabled(false);
+                lable1.setVisibility(View.VISIBLE);
+                lable2.setVisibility(View.VISIBLE);
+                number.setVisibility(View.VISIBLE);
+            }
         }
 
-        TextView number = (TextView) findViewById(R.id.number);
         number.setText(String.valueOf(num));
         if(isPrime(num))
         {
-            TextView lable1 = (TextView) findViewById(R.id.lable1);
-            TextView lable2 = (TextView) findViewById(R.id.lable2);
             lable1.setText("Yes,");
             lable2.setText("is a Prime number.");
         }
@@ -59,12 +80,48 @@ public class CheatActivity extends AppCompatActivity {
 
     void onClickBack(View view)
     {
-        this.finish();
+        Intent intent = new Intent(this,GameActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        boolean a;
+        if(state==1)
+            a=true;
+        else
+            a=false;
+        intent.putExtra("cheattaken",a);
+        intent.putExtra("activity",2);
+        intent.putExtra("num",num);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this,GameActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        boolean a;
+        if(state==1)
+            a=true;
+        else
+            a=false;
+        intent.putExtra("cheattaken",a);
+        intent.putExtra("activity",2);
+        intent.putExtra("num",num);
+        startActivity(intent);
+    }
+
+    void onClickShow(View view)
+    {
+        show.setEnabled(false);
+        state=1;
+        lable1.setVisibility(View.VISIBLE);
+        lable2.setVisibility(View.VISIBLE);
+        number.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        //Log.i("CHEAT","in save instance");
         savedInstanceState.putInt("num", num);
+        savedInstanceState.putInt("state", state);
         super.onSaveInstanceState(savedInstanceState);
     }
 }

@@ -13,10 +13,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Hints"
-        android:id="@+id/textView"
+        android:text="Hints Here"
+        android:id="@+id/hint"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"
+        android:onClick="onClickShow" />
 
     <Button
         android:layout_width="wrap_content"
@@ -28,4 +30,14 @@
         android:layout_alignParentStart="true"
         android:onClick="onClickBack"
         android:background="#0288d1" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Hint"
+        android:id="@+id/show"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="onClickShow"
+        android:nestedScrollingEnabled="false" />
 </RelativeLayout>

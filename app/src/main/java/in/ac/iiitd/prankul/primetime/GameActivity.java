@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -35,9 +36,11 @@ public class GameActivity extends AppCompatActivity {
     // important variables
     int state = 0;
     int score = 0;
-    int activityBackFromFlag = 0;
     int whichButtonPressed;
+    int activityBackFromFlag = 0;
     Drawable defaultYesButton,defaultNoButton,defaultSkipButton;
+    boolean cheatTaken, hintTaken, impFlag;
+    Bundle b;
 
     // initial number;
     Calendar c = Calendar.getInstance();
@@ -47,7 +50,7 @@ public class GameActivity extends AppCompatActivity {
 
     // widgets
     TextView number, scoreText, info;
-    Button buttonYes, buttonNo, buttonSkip;
+    Button buttonYes, buttonNo, buttonSkip, hint, cheat;
 
 
     @Override
@@ -64,12 +67,15 @@ public class GameActivity extends AppCompatActivity {
         //initial number
         random.setSeed(seconds);
         num = random.nextInt(1000)+1;
+        impFlag=true;
 
         //widget initialization
         number = (TextView) findViewById(R.id.number);
         buttonYes = (Button) findViewById(R.id.buttonYes);
         buttonNo = (Button) findViewById(R.id.buttonNo);
         buttonSkip = (Button) findViewById(R.id.buttonSkip);
+        hint = (Button) findViewById(R.id.hint);
+        cheat = (Button) findViewById(R.id.cheat);
         scoreText = (TextView) findViewById(R.id.score);
         info = (TextView) findViewById(R.id.info);
 
@@ -82,40 +88,43 @@ public class GameActivity extends AppCompatActivity {
         defaultNoButton.setColorFilter(Color.GREEN, PorterDuff.Mode.LIGHTEN);
         defaultSkipButton.setColorFilter(Color.WHITE, PorterDuff.Mode.LIGHTEN);
 
+        Bundle b = getIntent().getExtras();
+        if(b!=null)
+        {
+            activityBackFromFlag = b.getInt("activity");
+            if(activityBackFromFlag==1)
+            {
+                hintTaken = b.getBoolean("hinttaken");
+                cheatTaken = false;
+            }
+            if(activityBackFromFlag==2)
+            {
+                cheatTaken = b.getBoolean("cheattaken");
+                cheatTaken = false;
+            }
+        }
         if(savedInstanceState==null) {
             number.setText(String.valueOf(num));
             scoreText.setText(String.valueOf(score));
             info.setVisibility(View.INVISIBLE);
         }
         else {
+            impFlag=false;
             num = savedInstanceState.getInt("num");
             state = savedInstanceState.getInt("state");
             whichButtonPressed = savedInstanceState.getInt("button");
             score = savedInstanceState.getInt("score");
-            activityBackFromFlag = savedInstanceState.getInt("activity");
-            //Log.i("GAME","activity no "+activityBackFromFlag);
+            activityBackFromFlag=savedInstanceState.getInt("activity");
+            hintTaken = savedInstanceState.getBoolean("hinttaken");
+            cheatTaken = savedInstanceState.getBoolean("cheattaken");
             scoreText.setText(String.valueOf(score));
-
-            //info lable
-            if(activityBackFromFlag==0)
-            {
-                info.setVisibility(View.INVISIBLE);
-            }
-            else if(activityBackFromFlag==1)
-            {
-                info.setVisibility(View.VISIBLE);
-                info.setText(R.string.hintused);
-            }
-            else if(activityBackFromFlag==2)
-            {
-                info.setVisibility(View.VISIBLE);
-                info.setText(R.string.cheatused);
-            }
 
             //state conditions
             if (state == 1) {
                 buttonYes.setEnabled(false);
                 buttonNo.setEnabled(false);
+                hint.setEnabled(false);
+                cheat.setEnabled(false);
                 if(whichButtonPressed==1)
                 {
                     if(isPrime(num))
@@ -139,8 +148,67 @@ public class GameActivity extends AppCompatActivity {
                         .setNegativeButton("No", skipClickListener)
                         .show();
             }
+
+            //info lable
+            Log.i("GAME",activityBackFromFlag+" "+hintTaken+" "+cheatTaken);
+            if(activityBackFromFlag==0)
+            {
+                info.setVisibility(View.INVISIBLE);
+            }
+            else if(activityBackFromFlag==1 && hintTaken)
+            {
+                info.setVisibility(View.VISIBLE);
+                info.setText(R.string.hintused);
+            }
+            else if(activityBackFromFlag==2 && cheatTaken)
+            {
+                info.setVisibility(View.VISIBLE);
+                info.setText(R.string.cheatused);
+            }
             number.setText(String.valueOf(num));
         }
+        b=savedInstanceState;
+    }
+
+    @Override
+    protected void onResume() {
+        Log.i("GAME","OnResume");
+        Bundle b = getIntent().getExtras();
+        if(b!=null && impFlag)
+        {
+            num = b.getInt("num");
+            activityBackFromFlag = b.getInt("activity");
+            if(activityBackFromFlag==1)
+            {
+                hintTaken = b.getBoolean("hinttaken");
+                cheatTaken = false;
+            }
+            if(activityBackFromFlag==2)
+            {
+                cheatTaken = b.getBoolean("cheattaken");
+                hintTaken = false;
+            }
+        }
+
+        //info lable
+        Log.i("GAME",activityBackFromFlag+" "+hintTaken+" "+cheatTaken);
+        if(activityBackFromFlag==0)
+        {
+            info.setVisibility(View.INVISIBLE);
+        }
+        else if(activityBackFromFlag==1 && hintTaken)
+        {
+            info.setVisibility(View.VISIBLE);
+            info.setText(R.string.hintused);
+        }
+        else if(activityBackFromFlag==2 && cheatTaken)
+        {
+            info.setVisibility(View.VISIBLE);
+            info.setText(R.string.cheatused);
+        }
+        number.setText(String.valueOf(num));
+
+        super.onResume();
     }
 
     public void clickYes(View view)
@@ -149,6 +217,8 @@ public class GameActivity extends AppCompatActivity {
         whichButtonPressed=1;
         buttonYes.setEnabled(false);
         buttonNo.setEnabled(false);
+        cheat.setEnabled(false);
+        hint.setEnabled(false);
         if(isPrime(num)) {
             Snackbar.make(view, "You are Right! You have got +10 Points", Snackbar.LENGTH_LONG).show();
             defaultYesButton.setColorFilter(Color.GREEN, PorterDuff.Mode.DARKEN);
@@ -173,6 +243,8 @@ public class GameActivity extends AppCompatActivity {
         whichButtonPressed=0;
         buttonYes.setEnabled(false);
         buttonNo.setEnabled(false);
+        cheat.setEnabled(false);
+        hint.setEnabled(false);
         if(!isPrime(num)) {
             Snackbar.make(view, "You are Right! You have got +10 Points", Snackbar.LENGTH_SHORT).show();
             defaultNoButton.setColorFilter(Color.GREEN, PorterDuff.Mode.DARKEN);
@@ -208,11 +280,13 @@ public class GameActivity extends AppCompatActivity {
             state=0;
             num = random.nextInt(1000)+1;
             number.setText(String.valueOf(num));
-            activityBackFromFlag=0;
-            info.setVisibility(View.INVISIBLE);
 
             buttonNo.setEnabled(true);
             buttonYes.setEnabled(true);
+            cheat.setEnabled(true);
+            hint.setEnabled(true);
+            info.setVisibility(View.INVISIBLE);
+            activityBackFromFlag=0;
 
             defaultYesButton.setColorFilter(Color.WHITE, PorterDuff.Mode.LIGHTEN);
             defaultNoButton.setColorFilter(Color.WHITE, PorterDuff.Mode.LIGHTEN);
@@ -222,19 +296,14 @@ public class GameActivity extends AppCompatActivity {
     public void clickHint(View view)
     {
         Intent intent = new Intent(this,HintActivity.class);
-        activityBackFromFlag = 1;
-        info.setVisibility(View.VISIBLE);
-        info.setText(R.string.hintused);
+        intent.putExtra("num",num);
         startActivity(intent);
     }
 
     public void clickCheat(View view)
     {
         Intent intent = new Intent(this,CheatActivity.class);
-        activityBackFromFlag = 2;
         intent.putExtra("num",num);
-        info.setVisibility(View.VISIBLE);
-        info.setText(R.string.cheatused);
         startActivity(intent);
     }
 
@@ -245,7 +314,8 @@ public class GameActivity extends AppCompatActivity {
         savedInstanceState.putInt("button",whichButtonPressed);
         savedInstanceState.putInt("score",score);
         savedInstanceState.putInt("activity",activityBackFromFlag);
-        //Log.i("GAME","in saveinstance "+activityBackFromFlag);
+        savedInstanceState.putBoolean("cheattaken",cheatTaken);
+        savedInstanceState.putBoolean("hinttaken",hintTaken);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -260,12 +330,14 @@ public class GameActivity extends AppCompatActivity {
                     number.setText(String.valueOf(num));
                     buttonNo.setEnabled(true);
                     buttonYes.setEnabled(true);
+                    cheat.setEnabled(true);
+                    hint.setEnabled(true);
+                    info.setVisibility(View.INVISIBLE);
+                    activityBackFromFlag=0;
                     score-=5;
                     if(score<0)
                         score=0;
                     scoreText.setText(String.valueOf(score));
-                    activityBackFromFlag=0;
-                    info.setVisibility(View.INVISIBLE);
                     break;
 
                 case DialogInterface.BUTTON_NEGATIVE:
