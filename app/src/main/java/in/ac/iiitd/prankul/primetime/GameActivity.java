@@ -196,19 +196,18 @@ public class GameActivity extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
         if(b!=null && impFlag)
         {
-            num = b.getInt("num");
+            if(b.getInt("num")!=0)
+                num = b.getInt("num");
             score = b.getInt("score");
             scoreText.setText(String.valueOf(score));
             activityBackFromFlag = b.getInt("activity");
             if(activityBackFromFlag==1)
             {
                 hintTaken = b.getBoolean("hinttaken");
-                cheatTaken = false;
             }
             if(activityBackFromFlag==2)
             {
                 cheatTaken = b.getBoolean("cheattaken");
-                hintTaken = false;
             }
         }
 
