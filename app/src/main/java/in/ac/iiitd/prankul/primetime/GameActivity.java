@@ -177,6 +177,7 @@ public class GameActivity extends AppCompatActivity {
         if(b!=null && impFlag)
         {
             num = b.getInt("num");
+            score = b.getInt("score");
             activityBackFromFlag = b.getInt("activity");
             if(activityBackFromFlag==1)
             {
@@ -200,11 +201,13 @@ public class GameActivity extends AppCompatActivity {
         {
             info.setVisibility(View.VISIBLE);
             info.setText(R.string.hintused);
+            scoreText.setText(String.valueOf(score));
         }
         else if(activityBackFromFlag==2 && cheatTaken)
         {
             info.setVisibility(View.VISIBLE);
             info.setText(R.string.cheatused);
+            scoreText.setText(String.valueOf(score));
         }
         number.setText(String.valueOf(num));
 
@@ -297,6 +300,7 @@ public class GameActivity extends AppCompatActivity {
     {
         Intent intent = new Intent(this,HintActivity.class);
         intent.putExtra("num",num);
+        intent.putExtra("score",score);
         startActivity(intent);
     }
 
@@ -304,6 +308,7 @@ public class GameActivity extends AppCompatActivity {
     {
         Intent intent = new Intent(this,CheatActivity.class);
         intent.putExtra("num",num);
+        intent.putExtra("score",score);
         startActivity(intent);
     }
 

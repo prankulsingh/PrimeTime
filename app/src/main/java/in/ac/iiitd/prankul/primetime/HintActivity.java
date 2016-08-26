@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 public class HintActivity extends AppCompatActivity {
 
-    int state,num;
+    int state,num, score;
     TextView hint;
     Button return1,show;
 
@@ -20,6 +20,7 @@ public class HintActivity extends AppCompatActivity {
         Intent intent =  getIntent();
         Bundle b = intent.getExtras();
         num = b.getInt("num");
+        score = b.getInt("score");
 
         show = (Button) findViewById(R.id.show);
         return1 = (Button) findViewById(R.id.return1);
@@ -30,6 +31,7 @@ public class HintActivity extends AppCompatActivity {
         {
             state=savedInstanceState.getInt("state");
             num = savedInstanceState.getInt("num");
+            score = savedInstanceState.getInt("score");
             if(state==1) {
                 hint.setVisibility(View.VISIBLE);
                 show.setEnabled(false);
@@ -53,6 +55,7 @@ public class HintActivity extends AppCompatActivity {
         intent.putExtra("hinttaken",a);
         intent.putExtra("activity",1);
         intent.putExtra("num",num);
+        intent.putExtra("score",score);
         startActivity(intent);
     }
 
@@ -68,12 +71,16 @@ public class HintActivity extends AppCompatActivity {
         intent.putExtra("hinttaken",a);
         intent.putExtra("activity",1);
         intent.putExtra("num",num);
+        intent.putExtra("score",score);
         startActivity(intent);
     }
 
     void onClickShow(View view)
     {
         state=1;
+        score-=2;
+        if(score<0)
+            score=0;
         show.setEnabled(false);
         hint.setVisibility(View.VISIBLE);
     }
@@ -82,6 +89,8 @@ public class HintActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         //Log.i("CHEAT","in save instance");
         savedInstanceState.putInt("state", state);
+        savedInstanceState.putInt("num", num);
+        savedInstanceState.putInt("score", score);
         super.onSaveInstanceState(savedInstanceState);
     }
 }
