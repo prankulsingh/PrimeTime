@@ -20,7 +20,7 @@ import java.util.Random;
 
 public class GameActivity extends AppCompatActivity {
 
-    boolean isPrime(int x)
+    /*boolean isPrime(int x)
     {
         int primes[] = {2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113,127,131,137,139,149,151,157,163,167,173,179,181,191,193,197,199,211,223,227,229,233,239,241,251,257,263,269,271,277,281,283,293,307,311,313,317,331,337,347,349,353,359,367,373,379,383,389,397,401,409,419,421,431,433,439,443,449,457,461,463,467,479,487,491,499,503,509,521,523,541,547,557,563,569,571,577,587,593,599,601,607,613,617,619,631,641,643,647,653,659,661,673,677,683,691,701,709,719,727,733,739,743,751,757,761,769,773,787,797,809,811,821,823,827,829,839,853,857,859,863,877,881,883,887,907,911,919,929,937,941,947,953,967,971,977,983,991,997};
 
@@ -32,6 +32,26 @@ public class GameActivity extends AppCompatActivity {
             }
         }
         return false;
+    }*/
+    int n = 1000;
+    boolean[] isPrime = new boolean[n+1];
+
+    void generatePrime() {
+
+        for (int i = 2; i <= n; i++) {
+            isPrime[i] = true;
+        }
+
+        for (int factor = 2; factor*factor <= n; factor++) {
+
+            if (isPrime[factor]) {
+                for (int j = factor; factor*j <= n; j++) {
+                    isPrime[factor*j] = false;
+                }
+            }
+        }
+        isPrime[0]=false;
+        isPrime[1]=false;
     }
 
     // important variables
@@ -59,6 +79,7 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        generatePrime();
 
         // icon on toolbar
         ActionBar actionBar = getSupportActionBar();
@@ -133,14 +154,14 @@ public class GameActivity extends AppCompatActivity {
                 cheat.setEnabled(false);
                 if(whichButtonPressed==1)
                 {
-                    if(isPrime(num))
+                    if(isPrime[num])
                         defaultYesButton.setColorFilter(Color.GREEN, PorterDuff.Mode.DARKEN);
                     else
                         defaultYesButton.setColorFilter(Color.RED, PorterDuff.Mode.DARKEN);
                 }
                 else if(whichButtonPressed==0)
                 {
-                    if(isPrime(num))
+                    if(isPrime[num])
                         defaultNoButton.setColorFilter(Color.RED, PorterDuff.Mode.DARKEN);
                     else
                         defaultNoButton.setColorFilter(Color.GREEN, PorterDuff.Mode.DARKEN);
@@ -280,7 +301,7 @@ public class GameActivity extends AppCompatActivity {
         buttonNo.setEnabled(false);
         cheat.setEnabled(false);
         hint.setEnabled(false);
-        if(isPrime(num)) {
+        if(isPrime[num]) {
             Snackbar.make(view, "You are Right! You have got +10 Points", Snackbar.LENGTH_LONG).show();
             defaultYesButton.setColorFilter(Color.GREEN, PorterDuff.Mode.DARKEN);
             score+=10;
@@ -306,7 +327,7 @@ public class GameActivity extends AppCompatActivity {
         buttonNo.setEnabled(false);
         cheat.setEnabled(false);
         hint.setEnabled(false);
-        if(!isPrime(num)) {
+        if(!isPrime[num]) {
             Snackbar.make(view, "You are Right! You have got +10 Points", Snackbar.LENGTH_SHORT).show();
             defaultNoButton.setColorFilter(Color.GREEN, PorterDuff.Mode.DARKEN);
             score+=10;
@@ -365,6 +386,7 @@ public class GameActivity extends AppCompatActivity {
     {
         Intent intent = new Intent(this,CheatActivity.class);
         intent.putExtra("num",num);
+        intent.putExtra("isprime",isPrime[num]);
         startActivityForResult(intent,2);
     }
 
