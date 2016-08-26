@@ -7,13 +7,14 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="in.ac.iiitd.prankul.primetime.HintActivity">
+    tools:context="in.ac.iiitd.prankul.primetime.HintActivity"
+    android:background="#FFFFF59D">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Hints Here"
+        android:text="If a number is divisible by any number other than 1 or itself, it is NOT prime.\n\nOtherwise, it is prime."
         android:id="@+id/hint"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"

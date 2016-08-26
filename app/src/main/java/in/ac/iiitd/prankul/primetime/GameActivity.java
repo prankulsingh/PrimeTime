@@ -41,6 +41,7 @@ public class GameActivity extends AppCompatActivity {
     Drawable defaultYesButton,defaultNoButton,defaultSkipButton;
     boolean cheatTaken, hintTaken, impFlag;
     Bundle b;
+    int whatHelp = 0;
 
     // initial number;
     Calendar c = Calendar.getInstance();
@@ -88,7 +89,7 @@ public class GameActivity extends AppCompatActivity {
         defaultNoButton.setColorFilter(Color.GREEN, PorterDuff.Mode.LIGHTEN);
         defaultSkipButton.setColorFilter(Color.WHITE, PorterDuff.Mode.LIGHTEN);
 
-        Bundle b = getIntent().getExtras();
+        /*Bundle b = getIntent().getExtras();
         if(b!=null)
         {
             activityBackFromFlag = b.getInt("activity");
@@ -102,7 +103,7 @@ public class GameActivity extends AppCompatActivity {
                 cheatTaken = b.getBoolean("cheattaken");
                 cheatTaken = false;
             }
-        }
+        }*/
         if(savedInstanceState==null) {
             number.setText(String.valueOf(num));
             scoreText.setText(String.valueOf(score));
@@ -117,7 +118,26 @@ public class GameActivity extends AppCompatActivity {
             activityBackFromFlag=savedInstanceState.getInt("activity");
             hintTaken = savedInstanceState.getBoolean("hinttaken");
             cheatTaken = savedInstanceState.getBoolean("cheattaken");
+            whatHelp = savedInstanceState.getInt("help");
             scoreText.setText(String.valueOf(score));
+
+            //which help was taken, disablng buttons
+
+            if(whatHelp==0)
+            {
+                hint.setEnabled(true);
+                cheat.setEnabled(true);
+            }
+            else if(whatHelp==1)
+            {
+                hint.setEnabled(false);
+                cheat.setEnabled(true);
+            }
+            else if(whatHelp==2)
+            {
+                hint.setEnabled(false);
+                cheat.setEnabled(false);
+            }
 
             //state conditions
             if (state == 1) {
@@ -178,6 +198,7 @@ public class GameActivity extends AppCompatActivity {
         {
             num = b.getInt("num");
             score = b.getInt("score");
+            scoreText.setText(String.valueOf(score));
             activityBackFromFlag = b.getInt("activity");
             if(activityBackFromFlag==1)
             {
@@ -196,18 +217,24 @@ public class GameActivity extends AppCompatActivity {
         if(activityBackFromFlag==0)
         {
             info.setVisibility(View.INVISIBLE);
+            whatHelp=0;
         }
         else if(activityBackFromFlag==1 && hintTaken)
         {
             info.setVisibility(View.VISIBLE);
             info.setText(R.string.hintused);
             scoreText.setText(String.valueOf(score));
+            whatHelp = 1;
+            hint.setEnabled(false);
         }
         else if(activityBackFromFlag==2 && cheatTaken)
         {
             info.setVisibility(View.VISIBLE);
             info.setText(R.string.cheatused);
             scoreText.setText(String.valueOf(score));
+            whatHelp=2;
+            hint.setEnabled(false);
+            cheat.setEnabled(false);
         }
         number.setText(String.valueOf(num));
 
@@ -321,6 +348,7 @@ public class GameActivity extends AppCompatActivity {
         savedInstanceState.putInt("activity",activityBackFromFlag);
         savedInstanceState.putBoolean("cheattaken",cheatTaken);
         savedInstanceState.putBoolean("hinttaken",hintTaken);
+        savedInstanceState.putInt("help",whatHelp);
         super.onSaveInstanceState(savedInstanceState);
     }
 
