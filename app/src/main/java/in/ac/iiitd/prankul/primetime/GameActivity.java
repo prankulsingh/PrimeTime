@@ -1,5 +1,6 @@
 package in.ac.iiitd.prankul.primetime;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -89,21 +90,6 @@ public class GameActivity extends AppCompatActivity {
         defaultNoButton.setColorFilter(Color.GREEN, PorterDuff.Mode.LIGHTEN);
         defaultSkipButton.setColorFilter(Color.WHITE, PorterDuff.Mode.LIGHTEN);
 
-        /*Bundle b = getIntent().getExtras();
-        if(b!=null)
-        {
-            activityBackFromFlag = b.getInt("activity");
-            if(activityBackFromFlag==1)
-            {
-                hintTaken = b.getBoolean("hinttaken");
-                cheatTaken = false;
-            }
-            if(activityBackFromFlag==2)
-            {
-                cheatTaken = b.getBoolean("cheattaken");
-                cheatTaken = false;
-            }
-        }*/
         if(savedInstanceState==null) {
             number.setText(String.valueOf(num));
             scoreText.setText(String.valueOf(score));
@@ -122,7 +108,7 @@ public class GameActivity extends AppCompatActivity {
             scoreText.setText(String.valueOf(score));
 
             //which help was taken, disablng buttons
-
+            Log.i("GAME",""+whatHelp);
             if(whatHelp==0)
             {
                 hint.setEnabled(true);
@@ -170,7 +156,7 @@ public class GameActivity extends AppCompatActivity {
             }
 
             //info lable
-            Log.i("GAME",activityBackFromFlag+" "+hintTaken+" "+cheatTaken);
+            //Log.i("GAME",activityBackFromFlag+" "+hintTaken+" "+cheatTaken);
             if(activityBackFromFlag==0)
             {
                 info.setVisibility(View.INVISIBLE);
@@ -187,10 +173,9 @@ public class GameActivity extends AppCompatActivity {
             }
             number.setText(String.valueOf(num));
         }
-        b=savedInstanceState;
     }
 
-    @Override
+    /*@Override
     protected void onResume() {
         Log.i("GAME","OnResume");
         Bundle b = getIntent().getExtras();
@@ -238,6 +223,53 @@ public class GameActivity extends AppCompatActivity {
         number.setText(String.valueOf(num));
 
         super.onResume();
+    }*/
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                activityBackFromFlag = data.getIntExtra("activity",1);
+                hintTaken = data.getBooleanExtra("hinttaken",false);
+            }
+        }
+        else if(requestCode==2)
+        {
+            if(resultCode == Activity.RESULT_OK){
+                activityBackFromFlag = data.getIntExtra("activity",2);
+                cheatTaken = data.getBooleanExtra("cheattaken",false);
+            }
+        }
+
+        if(activityBackFromFlag==0)
+        {
+            info.setVisibility(View.INVISIBLE);
+            whatHelp=0;
+        }
+        else if(activityBackFromFlag==1 && hintTaken)
+        {
+            info.setVisibility(View.VISIBLE);
+            info.setText(R.string.hintused);
+            score-=2;
+            if(score<0)
+                score=0;
+            scoreText.setText(String.valueOf(score));
+            whatHelp = 1;
+            hint.setEnabled(false);
+        }
+        else if(activityBackFromFlag==2 && cheatTaken)
+        {
+            info.setVisibility(View.VISIBLE);
+            info.setText(R.string.cheatused);
+            score-=8;
+            if(score<0)
+                score=0;
+            scoreText.setText(String.valueOf(score));
+            whatHelp=2;
+            hint.setEnabled(false);
+            cheat.setEnabled(false);
+        }
     }
 
     public void clickYes(View view)
@@ -316,6 +348,7 @@ public class GameActivity extends AppCompatActivity {
             hint.setEnabled(true);
             info.setVisibility(View.INVISIBLE);
             activityBackFromFlag=0;
+            whatHelp=0;
 
             defaultYesButton.setColorFilter(Color.WHITE, PorterDuff.Mode.LIGHTEN);
             defaultNoButton.setColorFilter(Color.WHITE, PorterDuff.Mode.LIGHTEN);
@@ -325,17 +358,14 @@ public class GameActivity extends AppCompatActivity {
     public void clickHint(View view)
     {
         Intent intent = new Intent(this,HintActivity.class);
-        intent.putExtra("num",num);
-        intent.putExtra("score",score);
-        startActivity(intent);
+        startActivityForResult(intent,1);
     }
 
     public void clickCheat(View view)
     {
         Intent intent = new Intent(this,CheatActivity.class);
         intent.putExtra("num",num);
-        intent.putExtra("score",score);
-        startActivity(intent);
+        startActivityForResult(intent,2);
     }
 
     @Override
@@ -366,6 +396,7 @@ public class GameActivity extends AppCompatActivity {
                     hint.setEnabled(true);
                     info.setVisibility(View.INVISIBLE);
                     activityBackFromFlag=0;
+                    whatHelp=0;
                     score-=5;
                     if(score<0)
                         score=0;

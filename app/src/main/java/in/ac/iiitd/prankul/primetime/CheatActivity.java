@@ -1,5 +1,6 @@
 package in.ac.iiitd.prankul.primetime;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,7 +24,7 @@ public class CheatActivity extends AppCompatActivity {
         return false;
     }
 
-    int num, state,score;
+    int num, state;
 
     TextView lable1, lable2, number;
     Button return1,show;
@@ -44,7 +45,6 @@ public class CheatActivity extends AppCompatActivity {
             Intent intent = getIntent();
             Bundle b = intent.getExtras();
             num = b.getInt("num");
-            score = b.getInt("score");
         }
         if(savedInstanceState==null)
         {
@@ -55,7 +55,6 @@ public class CheatActivity extends AppCompatActivity {
             Bundle b = savedInstanceState;
             num = b.getInt("num");
             state = b.getInt("state");
-            score = b.getInt("score");
             if(state==1)
             {
                 show.setEnabled(false);
@@ -83,7 +82,6 @@ public class CheatActivity extends AppCompatActivity {
     void onClickBack(View view)
     {
         Intent intent = new Intent(this,GameActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         boolean a;
         if(state==1)
             a=true;
@@ -91,15 +89,14 @@ public class CheatActivity extends AppCompatActivity {
             a=false;
         intent.putExtra("cheattaken",a);
         intent.putExtra("activity",2);
-        intent.putExtra("num",num);
-        intent.putExtra("score",score);
-        startActivity(intent);
+        setResult(Activity.RESULT_OK,intent);
+        finish();
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed()
+    {
         Intent intent = new Intent(this,GameActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         boolean a;
         if(state==1)
             a=true;
@@ -107,16 +104,12 @@ public class CheatActivity extends AppCompatActivity {
             a=false;
         intent.putExtra("cheattaken",a);
         intent.putExtra("activity",2);
-        intent.putExtra("num",num);
-        intent.putExtra("score",score);
-        startActivity(intent);
+        setResult(Activity.RESULT_OK,intent);
+        finish();
     }
 
     void onClickShow(View view)
     {
-        score-=8;
-        if(score<0)
-            score=0;
         show.setEnabled(false);
         state=1;
         lable1.setVisibility(View.VISIBLE);
@@ -129,7 +122,6 @@ public class CheatActivity extends AppCompatActivity {
         //Log.i("CHEAT","in save instance");
         savedInstanceState.putInt("num", num);
         savedInstanceState.putInt("state", state);
-        savedInstanceState.putInt("score", score);
         super.onSaveInstanceState(savedInstanceState);
     }
 }

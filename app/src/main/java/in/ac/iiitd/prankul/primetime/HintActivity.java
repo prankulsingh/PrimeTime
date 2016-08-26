@@ -1,5 +1,6 @@
 package in.ac.iiitd.prankul.primetime;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,7 +10,7 @@ import android.widget.TextView;
 
 public class HintActivity extends AppCompatActivity {
 
-    int state,num, score;
+    int state;
     TextView hint;
     Button return1,show;
 
@@ -17,10 +18,6 @@ public class HintActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hint);
-        Intent intent =  getIntent();
-        Bundle b = intent.getExtras();
-        num = b.getInt("num");
-        score = b.getInt("score");
 
         show = (Button) findViewById(R.id.show);
         return1 = (Button) findViewById(R.id.return1);
@@ -30,8 +27,6 @@ public class HintActivity extends AppCompatActivity {
         if(savedInstanceState!=null)
         {
             state=savedInstanceState.getInt("state");
-            num = savedInstanceState.getInt("num");
-            score = savedInstanceState.getInt("score");
             if(state==1) {
                 hint.setVisibility(View.VISIBLE);
                 show.setEnabled(false);
@@ -54,9 +49,8 @@ public class HintActivity extends AppCompatActivity {
             a=false;
         intent.putExtra("hinttaken",a);
         intent.putExtra("activity",1);
-        intent.putExtra("num",num);
-        intent.putExtra("score",score);
-        startActivity(intent);
+        setResult(Activity.RESULT_OK,intent);
+        finish();
     }
 
     @Override
@@ -70,17 +64,13 @@ public class HintActivity extends AppCompatActivity {
             a=false;
         intent.putExtra("hinttaken",a);
         intent.putExtra("activity",1);
-        intent.putExtra("num",num);
-        intent.putExtra("score",score);
-        startActivity(intent);
+        setResult(Activity.RESULT_OK,intent);
+        finish();
     }
 
     void onClickShow(View view)
     {
         state=1;
-        score-=2;
-        if(score<0)
-            score=0;
         show.setEnabled(false);
         hint.setVisibility(View.VISIBLE);
     }
@@ -89,8 +79,6 @@ public class HintActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         //Log.i("CHEAT","in save instance");
         savedInstanceState.putInt("state", state);
-        savedInstanceState.putInt("num", num);
-        savedInstanceState.putInt("score", score);
         super.onSaveInstanceState(savedInstanceState);
     }
 }
